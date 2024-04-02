@@ -122,9 +122,4 @@ mlflow.artifacts.download_artifacts(model_uri, dst_path=dest_artifact_path)
 
 # COMMAND ----------
 
-# MAGIC %sh
-# MAGIC ls -lrt /local_disk0/models_v2/databricks_llama_2_models/models/llama_2_7b_chat_hf/3/
-
-# COMMAND ----------
-
 
