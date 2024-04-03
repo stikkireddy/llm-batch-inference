@@ -109,17 +109,4 @@ ray.shutdown()
 
 # COMMAND ----------
 
-import mlflow
-mlflow.set_registry_uri("databricks-uc")
-catalog="databricks_llama_2_models"
-schema="models"
-model_name="llama_2_7b_chat_hf"
-# model_name="llama_2_70b_chat_hf"
-version=3
-model_uri = f"models:/{catalog}.{schema}.{model_name}/{version}"
-dest_artifact_path=f"/local_disk0/models_v2/{catalog}/{schema}/{model_name}/{version}"
-mlflow.artifacts.download_artifacts(model_uri, dst_path=dest_artifact_path)
-
-# COMMAND ----------
-
 
