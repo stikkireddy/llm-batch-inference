@@ -21,18 +21,28 @@ The plan is to have 3 notebooks.
 
 ## Prompting & Performance
 
-Most models have specific instruction tokens and special tokens to deal with prompting and sending instructions to the model. This is **extremely** important for throughput and performance. Otherwise the model will be very chatty and potentially loop completions till the max token has been met. This is where these special tokens come into play.
+Most  OSS models have specific instruction tokens and special tokens to deal with prompting and sending instructions to the model. This is **extremely** important for throughput and performance. Otherwise the model will be very chatty and potentially loop completions till the max token has been met. This is where these special tokens come into play.
 
-For now mixtral and llama based models use the following instructions and the work similar to xml/html tags which require a starting and enclosing tag:
+For now mixtral and llama based models use similar tokens and work similar to xml/html tags with subtle differences explained below:
 
 1. `[INST]` and `[/INST]` to indicate instruction blocks
 2. `<<SYS>>` and `<</SYS>>` to indicate system prompt
 3. `<s>` and `</s>` to indicate beginning of string (BOS) and end of string (EOS) respectively
 
+### LLAMA Models
+
+The Llama2 series requires the use of `<<SYS>>` for creaing systen prompts and using `[INST]` tokens for giving specific instructions. 
+please note `<s>` is not closed
+
+Prompt Template: 
+```
+<s>[INST] <<SYS>>
+{{ system_prompt }}
+<</SYS>>
+
+{{ user_message }} [/INST]
+```
 Example:
-
-This takes advantage of the above mentioned tokens.
-
 ```
 <s>[INST] <<SYS>>
 You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
@@ -42,8 +52,26 @@ If a question does not make any sense, or is not factually coherent, explain why
 
 There's a llama in my garden 😱 What should I do? [/INST]
 ```
+Further details [here]( https://huggingface.co/blog/llama2#how-to-prompt-llama-2 )
 
-Please keep in mind that both this and the output tokens configured during inference impact decoding performance and this can drastically improve throughput if your outputs need to be consise and short.
+### Mixtral and Mistral models
+
+Both these family of models only use the `<s>` and `[INST]` tokens for creating the prompt structure.
+
+Prompt Template: 
+```
+<s>[INST] Instruction [/INST] Model answer</s>[INST] Follow-up instruction [/INST]
+```
+Example:
+```
+[INST] You are a helpful code assistant. Your task is to generate a valid JSON object based on the given information:
+name: John
+lastname: Smith
+address: #1 Samuel St.
+Just generate the JSON object without explanations:
+[/INST]
+```
+Further details [here]( https://www.promptingguide.ai/models/mixtral#prompt-engineering-guide-for-mixtral-8x7b )
 
 
 ## Inference Sampling Parameters
