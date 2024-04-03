@@ -18,6 +18,25 @@ The plan is to have 3 notebooks.
 2. Batch scoring for multi node (multi or single gpu). [TBD]
 3. Batch scoring by making api calls to provisioned throughput models hosted on model serving. [TBD]
 
+## Getting access to models
+
+1. log in to your databricks workspace
+2. go to marketplace (you may need your admin to do the next steps)
+3. search for dbrx and get instant access
+4. download the models
+5. use the provided notebook if you need provisioned throughput deployed model
+6. Otherwise follow this WYIWYG guide to do batch inference on a job / interactive cluster
+
+## Notebooks
+
+Currently all notebooks are for single node multi-gpu vms.
+
+1. batch scoring with dbrx (4 x A100 GPUs): [notebook](./01_batch_scoring_single_node_dbrx.py)
+    * DBRX needs vllm 0.4.0 and it has a slight bug so we are using 0.4.0.post1 hotfix with the direct url
+2. batch scoring with llama or mixtral: [notebook](./01_batch_scoring_single_node.py)
+    * you need (2 x A100 GPUs) atleast for the 70b or mixtral 8x7b models
+    * the rest you should be able to make do with 1 x A100 GPU on the vm
+
 
 ## Prompting & Performance
 
