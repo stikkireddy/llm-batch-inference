@@ -18,6 +18,6 @@ def stage_registered_model(
   mlflow.set_registry_uri("databricks-uc")
   model_uri = f"models:/{catalog}.{schema}.{model_name}/{version}"
   mlflow.artifacts.download_artifacts(model_uri, dst_path=local_model_path)
-  print(f"Model from uc registry saved in: {model_root_path}")
+  print(f"Model from uc registry saved in: {local_model_path}")
   return local_model_path
   
