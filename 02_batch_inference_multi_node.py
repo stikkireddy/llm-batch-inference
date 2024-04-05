@@ -9,9 +9,9 @@ dbutils.library.restartPython()
 from utils.uc_helpers import stage_registered_model
 
 # this is used to shard the model across the gpus per node
-number_of_gpus_per_node = 2
+number_of_gpus_per_node = 1
 # total number of workers with gpus
-number_of_worker_nodes = 2
+number_of_worker_nodes = 4
 # records per batch (make this from 1024-4096) changing wont oom but larger batches makes longer tasks
 records_per_batch = 1024
 
@@ -22,6 +22,7 @@ model_staged_path = stage_registered_model(
   catalog="databricks_llama_2_models",
   schema="models",
   model_name="llama_2_7b_chat_hf",
+  # model_name="llama_2_13b_chat_hf",
   # model_name="llama_2_70b_chat_hf",
   version=3,
   # change this local base path to some dbfs or volume location for distributed
@@ -170,6 +171,7 @@ print(f"vLLM Tokenizer Path: {spark.conf.get('vllm.tokenizer')}")
 # MAGIC }
 # MAGIC
 # MAGIC def runvLLM(): Unit = {
+# MAGIC   runBash("rm -f output.log || echo 'file doesnt exist'")
 # MAGIC   runBash(s"nohup $pythonExecutable -m vllm.entrypoints.openai.api_server --model '$modelPath' --tokenizer '$tokenizerPath' --tensor-parallel-size $numGpus --port $port > output.log 2>&1 &")
 # MAGIC   println("Started vLLM now waiting for server to be in a connectable state!")
 # MAGIC   verifyvLLM
@@ -209,7 +211,7 @@ def generate_random_questions(word_list, n):
             questions.append(f"[INST] <<SYS>> Answer to my quesiton in one sentence! Here is an example: \nQuestion: What day is today? Answer: Today is monday!<</SYS>> What is the definition of '{word}'?[/INST]")
     return questions
   
-questions = generate_random_questions(word_list=word_list, n=10000)
+questions = generate_random_questions(word_list=word_list, n=100000)
 
 df = spark.createDataFrame(pd.DataFrame({"text": questions}))
 display(df)

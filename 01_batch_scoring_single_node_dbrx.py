@@ -5,9 +5,7 @@
 # COMMAND ----------
 
 # DBTITLE 1,get_default_ray_configs
-from utils.ray_helpers import get_default_ray_cluster_config, get_proxy_url
-ray_config = get_default_ray_cluster_config(spark)
-ray_config.to_dict()
+num_gpus = 4
 
 # COMMAND ----------
 
@@ -97,7 +95,7 @@ from pyspark.sql.functions import pandas_udf
 model = LLM(model=model_path,
             tokenizer=tokenizer_path,
             trust_remote_code=True,
-            tensor_parallel_size=ray_config.num_gpus_head_node)
+            tensor_parallel_size=num_gpus)
 
 # COMMAND ----------
 
