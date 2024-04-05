@@ -1,5 +1,5 @@
 # Databricks notebook source
-# MAGIC %pip install -U 'https://github.com/vllm-project/vllm/releases/download/v0.4.0.post1/vllm-0.4.0.post1-cp310-cp310-manylinux1_x86_64.whl' 'ray[default]>=2.3.0'
+# MAGIC %pip install -U 'vllm==0.4.0.post1' 'ray[default]>=2.3.0'
 # MAGIC dbutils.library.restartPython()
 
 # COMMAND ----------
