@@ -1,5 +1,5 @@
 # Databricks notebook source
-# MAGIC %pip install 'vllm==0.3.0' 'ray[default]>=2.3.0'
+# MAGIC %pip install 'vllm==0.3.0'
 # MAGIC dbutils.library.restartPython()
 
 # COMMAND ----------
