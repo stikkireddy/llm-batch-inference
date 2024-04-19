@@ -6,6 +6,7 @@ dbutils.library.restartPython()
 
 # COMMAND ----------
 
+# DBTITLE 1,constants
 model_path = "liuhaotian/llava-v1.6-vicuna-7b"
 tokenizer_path = "llava-hf/llava-1.5-7b-hf"
 num_images_per_spark_task = 32
@@ -17,7 +18,9 @@ import sys
 # the python virtual env executable that notebooks create
 port = "30000"
 number_of_gpus_per_node = int(spark.conf.get("spark.executor.resource.gpu.amount"))
-num_workers = int(spark.conf.get("spark.databricks.clusterUsageTags.clusterWorkers"))
+
+# single node will be 0 workers so we want a max function here
+num_workers = max(1, int(spark.conf.get("spark.databricks.clusterUsageTags.clusterWorkers")))
 
 spark.conf.set("sglang.python.executable", str(sys.executable))
 # number of gpus per worker 
@@ -218,7 +221,7 @@ def describe(path_iterator: Iterator[pd.Series]) -> Iterator[pd.Series]:
 # COMMAND ----------
 
 import math
-data = spark.sql("SELECT * FROM srituc.default.demodata")
+data = spark.sql("SELECT * FROM srituc.default.demodata LIMIT 1000")
 total_ct = data.count()
 print(f"Total number of images: {total_ct}")
 num_partitions = max(num_workers, math.ceil(total_ct/num_images_per_spark_task))
@@ -229,6 +232,11 @@ data.repartition(num_partitions)\
   .format("delta")\
   .mode("overwrite")\
   .saveAsTable("srituc.default.demodata_described")
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC SELECT * FROM srituc.default.demodata_described
 
 # COMMAND ----------
 
